@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/backgrounds_wood_texture"
+    tools:context=".GameActivity">
+
+    <LinearLayout
+        android:id="@+id/game_top_padding_view"
+        android:background="@color/dark_square"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="data "
+            android:textSize="32sp"
+            android:textColor="@color/white"
+            android:layout_gravity="start"
+            android:gravity="start"
+            />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/exit_game_button"
+            android:background="@drawable/ic_go_back"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            android:gravity="end"
+            />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/opponent_username_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_opponent_value"
+        android:textSize="38sp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/game_top_padding_view"
+        app:layout_constraintEnd_toStartOf="@id/opponent_time_view"/>
+
+    <TextView
+        android:id="@+id/opponent_time_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_time_value"
+        android:textSize="30sp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/opponent_username_view"
+        app:layout_constraintTop_toBottomOf="@id/game_top_padding_view" />
+
+    <GridLayout
+        android:id="@+id/game_board_grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:paddingVertical="5dp"
+        android:paddingHorizontal="1dp"
+        android:columnCount="8"
+        android:rowCount="8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/opponent_username_view"
+        app:layout_constraintBottom_toTopOf="@id/self_time_view" >
+    </GridLayout>
+
+    <TextView
+        android:id="@+id/self_time_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_time_value"
+        android:textSize="30sp"
+        android:textColor="@color/white"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/offer_draw_button"/>
+
+
+    <Button
+        android:id="@+id/start_chain_capture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:backgroundTint="@color/light_square"
+        android:padding="15dp"
+        android:layout_marginBottom="50dp"
+        android:text="@string/chain_capture"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/offer_draw_button"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/offer_draw_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:backgroundTint="@color/draw_color"
+        android:padding="15dp"
+        android:text="@string/offer_draw"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/start_chain_capture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/start_chain_capture"
+        app:layout_constraintTop_toTopOf="@+id/start_chain_capture" />
+
+    <Button
+        android:id="@+id/show_ending_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:backgroundTint="@color/light_square"
+        android:padding="15dp"
+        android:visibility="gone"
+        android:text="show ending"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/game_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="35dp"
+        android:textSize="48sp"
+        android:background="@color/yellow"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+       android:visibility="gone"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

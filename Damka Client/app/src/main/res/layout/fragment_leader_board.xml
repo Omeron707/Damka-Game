@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/red_background"
+    tools:context=".LeaderBoardFragment">
+
+    <TextView
+        android:id="@+id/leaderboard_title"
+        android:background="@color/dimmed_black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="LeaderBoard"
+        android:textSize="56dp"/>
+
+    <Button
+        android:id="@+id/refresh_leaderboard"
+        android:background="@color/blue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="Refresh"
+        android:textSize="18dp"
+        android:layout_below="@+id/leaderboard_title"/>
+
+    <ListView
+        android:id="@+id/leaderboard_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:layout_below="@+id/refresh_leaderboard" />
+
+</RelativeLayout>

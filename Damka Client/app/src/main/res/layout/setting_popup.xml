@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutDirection="ltr"
+    android:background="@drawable/setting_popup_border">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/gray"
+        android:text="Setting"
+        android:textColor="@color/black"
+        android:gravity="center"
+        android:textSize="44sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/username_setting_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="2.5dp"
+        android:layout_marginEnd="3dp"
+        android:text="Username:"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/slider_place_holder"
+        app:layout_constraintEnd_toStartOf="@+id/center_setting_guideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edit_username_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/input_background"
+        android:padding="2.5dp"
+        android:layout_marginStart="3dp"
+        android:textSize="20sp"
+        android:hint="@string/username"
+        android:importantForAutofill="no"
+        app:layout_constraintBottom_toBottomOf="@+id/username_setting_view"
+        app:layout_constraintStart_toStartOf="@+id/center_setting_guideline"
+        app:layout_constraintTop_toTopOf="@+id/username_setting_view" />
+
+    <TextView
+        android:id="@+id/mail_setting_view"
+        android:padding="2.5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        android:text="Mail:"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/center_setting_guideline"
+        app:layout_constraintTop_toBottomOf="@+id/username_setting_view" />
+
+    <EditText
+        android:id="@+id/edit_mail_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="2.5dp"
+        android:layout_marginStart="3dp"
+        android:background="@drawable/input_background"
+        android:textSize="20sp"
+        android:hint="mail"
+        android:inputType="textEmailAddress"
+        android:importantForAutofill="no"
+        app:layout_constraintBottom_toBottomOf="@+id/mail_setting_view"
+        app:layout_constraintStart_toStartOf="@+id/center_setting_guideline"
+        app:layout_constraintTop_toTopOf="@+id/mail_setting_view" />
+
+    <TextView
+        android:id="@+id/privacy_setting_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="2.5dp"
+        android:layout_marginEnd="3dp"
+        android:text="Private:"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/center_setting_guideline"
+        app:layout_constraintTop_toBottomOf="@+id/mail_setting_view"/>
+
+    <CheckBox
+        android:id="@+id/privacy_setting_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/privacy_setting_view"
+        app:layout_constraintStart_toEndOf="@+id/privacy_setting_view"
+        app:layout_constraintTop_toTopOf="@+id/privacy_setting_view"
+        android:layout_marginStart="5dp"/>
+
+    <TextView
+        android:id="@+id/setting_error_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/none"
+        android:textColor="@color/red"
+        android:visibility="gone"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/logout_button"
+        app:layout_constraintEnd_toEndOf="@+id/logout_button"
+        app:layout_constraintStart_toStartOf="@+id/logout_button"
+         />
+
+    <Button
+        android:id="@+id/enable_edit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/blue"
+        app:layout_constraintBottom_toTopOf="@+id/slider_place_holder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/privacy_setting_view" />
+
+    <TextView
+        android:id="@+id/slider_place_holder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Slider here"
+        android:textSize="48sp"
+        app:layout_constraintBottom_toTopOf="@+id/logout_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mail_setting_view" />
+
+    <Button
+        android:id="@+id/logout_button"
+        android:background="@color/red"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/logout"
+        android:padding="5dp"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toTopOf="@id/setting_version_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/setting_version_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/none"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/center_setting_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

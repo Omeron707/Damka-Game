@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/end_game_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/end_game_title"
+        android:layout_marginTop="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Win"
+        android:textColor="@color/black"
+        android:textSize="48sp"/>
+
+    <TextView
+        android:id="@+id/end_game_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="1-0"
+        android:textColor="@color/black"
+        android:textSize="24sp"/>
+
+    <TextView
+        android:id="@+id/end_game_reason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="30sp"
+        android:textColor="@color/black"
+        android:paddingHorizontal="50dp"
+        android:text="reason" />
+
+    <Button
+        android:id="@+id/end_game_back_to_menu_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="back to menu"
+        android:textColor="@color/black"/>
+
+    <Button
+        android:id="@+id/end_game_close_popup_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="show board"
+        android:layout_marginBottom="40dp"
+        android:textColor="@color/black"/>
+
+</LinearLayout>
