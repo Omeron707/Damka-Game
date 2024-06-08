@@ -44,6 +44,7 @@ public class MenuActivity extends AppCompatActivity implements WebSocketListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        // hide phones navigation bar
         this.getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -140,24 +141,25 @@ public class MenuActivity extends AppCompatActivity implements WebSocketListener
 
         // set up game activity launcher
         gameActivityLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    Communicator.getInstance().setListener(this);
-                    this.isReturnFromGame = true;
-                    Communicator.getInstance().sendGetProfile(this.loggedUser.getUserID());
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            String res = data.getStringExtra("result");
-                            if (Objects.equals(res, "end_friend"))
-                            {
-                                Communicator.getInstance().sendCode(Constants.GET_FRIENDS_LIST_CODE);
-                            }
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                Communicator.getInstance().setListener(this);
+                this.isReturnFromGame = true;
+                Communicator.getInstance().sendGetProfile(this.loggedUser.getUserID());
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        String res = data.getStringExtra("result");
+                        if (Objects.equals(res, "end_friend"))
+                        {
+                            Communicator.getInstance().sendCode(Constants.GET_FRIENDS_LIST_CODE);
                         }
-                    } else {
-                        Communicator.getInstance().sendCode(Constants.GET_FRIENDS_LIST_CODE);
                     }
-                });
+                } else {
+                    Communicator.getInstance().sendCode(Constants.GET_FRIENDS_LIST_CODE);
+                }
+            }
+        );
 
         // Create an OnBackPressedCallback to handle the back button press
         OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true /* enabled by default */) {
@@ -182,20 +184,18 @@ public class MenuActivity extends AppCompatActivity implements WebSocketListener
             case 2:
                 return R.id.leaderboard;
         }
-        return R.id.home; // Default to the first menu item
+        return R.id.home; // Default to home
     }
 
     public void FriendNotificationClicked(String userID) {
         ViewPager2 viewPager = findViewById(R.id.viewPager);
         viewPager.setCurrentItem(0);
-
         friendsPage.highlightFriend(userID);
     }
 
     public void FriendRequestNotificationClicked(String userID) {
         ViewPager2 viewPager = findViewById(R.id.viewPager);
         viewPager.setCurrentItem(0);
-
         friendsPage.highlightFriendRequest(userID);
     }
 
@@ -211,24 +211,12 @@ public class MenuActivity extends AppCompatActivity implements WebSocketListener
         gameActivityLauncher.launch(intent);
     }
 
-    public void sendMarkNotificationAsRead(int id) {
-        String msg = "{\"code\": " + Constants.NOTIFICATION_CODE + ", \"notification_id\": " + id + "}";
-        Communicator.getInstance().sendMessage(msg);
-    }
-
-    public void sendUpdateData(String username, String mail, int privacy) {
-        String msg = "{\"code\": " + Constants.UPDATE_USER_DATA + ", \"username\": \"" + username + "\", \"mail\": \"" + mail + "\", \"private\": " + privacy + "}";
-        Communicator.getInstance().sendMessage(msg);
-    }
-
     @Override
     public void onWebSocketConnected() {
-        // WebSocket connected
     }
 
     @Override
     public void onMessageReceived(String message) {
-        // Handle Message (inbox, profile request)..
         runOnUiThread(() -> {
             try {
                 JSONObject result = new JSONObject(message);
@@ -416,16 +404,8 @@ public class MenuActivity extends AppCompatActivity implements WebSocketListener
         startActivity(intent);
     }
 
-    private Notification parseNotification(JSONObject message) throws JSONException {
-        int id = message.getInt("notification_id");
-        int type = message.getInt("type");
-        String source = message.getString("source");
-        String time = message.getString("time");
-        String content = message.getString("content");
-        return new Notification(id, type, source, time, content);
-    }
     private void getNotification(JSONObject message) throws JSONException {
-        Notification notification = parseNotification(message);
+        Notification notification = Notification.parseNotification(message);
         if (notification.getType() == 1 || notification.getType() == 2 || notification.getType() == 3) {
            Communicator.getInstance().sendCode(Constants.GET_FRIENDS_LIST_CODE);
         }
@@ -436,6 +416,7 @@ public class MenuActivity extends AppCompatActivity implements WebSocketListener
             gameInvite(notification);
         }
     }
+
 
     private void gameInvite(Notification notification) {
         String userID = notification.getSourceID();
@@ -460,7 +441,7 @@ public class MenuActivity extends AppCompatActivity implements WebSocketListener
         JSONArray notificationsJsonArray = message.getJSONArray("notifications");
         for (int i = 0; i < notificationsJsonArray.length(); i++) {
             JSONObject notificationsObject = notificationsJsonArray.getJSONObject(i);
-            notifications.add(parseNotification(notificationsObject));
+            notifications.add(Notification.parseNotification(notificationsObject));
         }
         homePage.setInboxMessages(notifications);
     }

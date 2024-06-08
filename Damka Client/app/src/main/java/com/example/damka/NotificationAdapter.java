@@ -62,7 +62,7 @@ public class NotificationAdapter extends ArrayAdapter<Notification> {
         buttonAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MenuActivity)getContext()).sendMarkNotificationAsRead(notification.getId());
+                Communicator.getInstance().sendMarkNotificationAsRead(notification.getId());
             }
         });
 

@@ -130,4 +130,24 @@ public class Communicator  {
         String msg = "{\"code\": " + Constants.GET_USER_PROFILE_CODE + ", \"userID\": \"" + userID + "\"}";
         this.sendMessage(msg);
     }
+
+    public void sendMarkNotificationAsRead(int id) {
+        String msg = "{\"code\": " + Constants.NOTIFICATION_CODE + ", \"notification_id\": " + id + "}";
+        this.sendMessage(msg);
+    }
+
+    public void sendUpdateData(String username, String mail, int privacy) {
+        String msg = "{\"code\": " + Constants.UPDATE_USER_DATA + ", \"username\": \"" + username + "\", \"mail\": \"" + mail + "\", \"private\": " + privacy + "}";
+        this.sendMessage(msg);
+    }
+
+    public void sendInviteMatch(String userID, int gameID) {
+        String msg = "{\"code\": " + Constants.INVITE_CODE + ", \"userID\": \"" + userID +  "\", \"gameID\": " + gameID + "}";
+        this.sendMessage(msg);
+    }
+
+    public void sendReady(int gameID) {
+        String msg = "{\"code\": " + Constants.READY_CODE + ", \"gameID\": " + gameID + "}";
+        this.sendMessage(msg);
+    }
 }

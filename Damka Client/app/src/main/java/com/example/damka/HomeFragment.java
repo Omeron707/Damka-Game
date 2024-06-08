@@ -230,7 +230,7 @@ public class HomeFragment extends Fragment {
                         privacyInt = -1;
                     }
                     if (!(username.equals("") && mail.equals("") && privacyInt == -1)) {
-                        ((MenuActivity)requireActivity()).sendUpdateData(username, mail, privacyInt);
+                        Communicator.getInstance().sendUpdateData(username, mail, privacyInt);
                     }
 
                     EditBtn.setText("Edit");

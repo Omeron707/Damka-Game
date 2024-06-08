@@ -34,6 +34,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     private GridLayout checkersBoard;
     private TextView opponentNameView;
     private TextView textLabel;
+    private TextView topTextLabel;
     private Button offerDrawBtn;
     private Button chainBtn;
     private Button showEndPopupBtn;
@@ -57,6 +58,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        // hide phones navigation bar
         this.getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -70,6 +72,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         Intent intent = getIntent();
         this.opponent = intent.getParcelableExtra("opponent");
         this.textLabel = findViewById(R.id.game_label);
+        this.topTextLabel = findViewById(R.id.top_game_label);
+        this.topTextLabel.setText("Looking for game");
         this.exitAlertMessage = "Are you sure you want to leave the match?";
 
         // Loop to create the grid of Buttons
@@ -164,7 +168,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         } else {
             this.opponentNameView.setText(opponent.getUsername());
             int id = intent.getIntExtra("gameID", 0);
-            sendInviteMatch(opponent.getUserID(), id);
+            Communicator.getInstance().sendInviteMatch(opponent.getUserID(), id);
             this.endReturn = "end_friend";
         }
 
@@ -187,12 +191,12 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
     private void selectPiece(int row, int col, Button clickedSquare) {
         if (Objects.equals(this.color, "white")) {
-            if (this.board[row][col] == Constants.WHITE_SOLDIER || this.board[row][col] == Constants.WHITE_QUEEN ) {
+            if (this.board[row][col] == Constants.WHITE_SOLDIER || this.board[row][col] == Constants.WHITE_QUEEN) {
                 this.selectedPieceIndex = row * checkersBoard.getColumnCount() + col;
                 clickedSquare.setBackgroundColor(getColor(R.color.red));
             }
         } else {
-            if (this.board[row][col] == Constants.BLACK_SOLDIER || this.board[row][col] == Constants.BLACK_QUEEN ) {
+            if (this.board[row][col] == Constants.BLACK_SOLDIER || this.board[row][col] == Constants.BLACK_QUEEN) {
                 this.selectedPieceIndex = row * checkersBoard.getColumnCount() + col;
                 clickedSquare.setBackgroundColor(getColor(R.color.red));
             }
@@ -487,9 +491,10 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         //update UI
         this.lookingForGame = false;
         hideLabel();
+        this.topTextLabel.setText("Playing");
         this.opponentNameView.setText(this.opponent.getUsername());
 
-        sendReady(message.getInt("gameID"));
+        Communicator.getInstance().sendReady(message.getInt("gameID"));
     }
 
     private void startGame() {
@@ -503,6 +508,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     private void showGameResult(JSONObject message) throws JSONException {
         changeBoardInteraction(false);
         this.offerDrawBtn.setEnabled(false);
+        this.topTextLabel.setText("Game End");
         this.exitAlertMessage = "Close";
         // this.gainTrophy;
         String result = message.getString("result");
@@ -638,18 +644,9 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             finish();
         });
     }
+
     @Override
     public void onError(Exception ex) {
-    }
-
-    private void sendInviteMatch(String userID, int gameID) {
-        String msg = "{\"code\": " + Constants.INVITE_CODE + ", \"userID\": \"" + userID +  "\", \"gameID\": " + gameID + "}";
-        Communicator.getInstance().sendMessage(msg);
-    }
-
-    private void sendReady(int gameID) {
-        String msg = "{\"code\": " + Constants.READY_CODE + ", \"gameID\": " + gameID + "}";
-        Communicator.getInstance().sendMessage(msg);
     }
 
     private void failedInvite() {
