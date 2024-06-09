@@ -2,20 +2,25 @@ package com.example.damka;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -236,6 +241,38 @@ public class HomeFragment extends Fragment {
                     EditBtn.setText("Edit");
                     editSettingState = false;
                 }
+            }
+        });
+
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(Constants.PREF_PLACE, Context.MODE_PRIVATE);
+        int savedVolume = sharedPreferences.getInt(Constants.PREF_VOLUME, 50);
+        boolean vibrationState = sharedPreferences.getBoolean(Constants.PREF_VIBRATION, true);
+
+        SeekBar volumeSeekBar = settingPopupView.findViewById(R.id.volume_seekbar);
+        volumeSeekBar.setMax(100);
+        volumeSeekBar.setProgress(savedVolume);
+
+        // Set up listener to save volume preference when changed
+        volumeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                ((MenuActivity)requireActivity()).setMediaVolume(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        SwitchCompat vibrationSwitch = settingPopupView.findViewById(R.id.vibration_switch);
+        vibrationSwitch.setChecked(vibrationState);
+        vibrationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Save the switch state to SharedPreferences when it's toggled
+                sharedPreferences.edit().putBoolean(Constants.PREF_VIBRATION, isChecked).apply();
             }
         });
 

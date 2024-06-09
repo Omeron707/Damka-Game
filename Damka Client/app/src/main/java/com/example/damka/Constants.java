@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Constants {
-    public static final String version = "v0.1.1";
+    public static final String version = "v0.1.2";
     public static final String serverIP = "192.168.68.106";
     public static final int serverPort = 9999;
 
@@ -53,4 +53,8 @@ public class Constants {
     public static final char BLACK_SOLDIER = 'b';
     public static final char WHITE_QUEEN = 'q';
     public static final char BLACK_QUEEN = 'k';
+
+    public static final String PREF_PLACE = "app_preferences";
+    public static final String PREF_VOLUME = "volume";
+    public static final String PREF_VIBRATION = "vibration";
 }

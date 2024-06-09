@@ -13,7 +13,10 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -31,6 +34,7 @@ import java.util.Objects;
 
 public class MenuActivity extends AppCompatActivity implements WebSocketListener {
 
+    private MediaPlayer mediaPlayer;
     private User loggedUser;
     private String loggedUserMail;
     private FriendsFragment friendsPage;
@@ -53,6 +57,14 @@ public class MenuActivity extends AppCompatActivity implements WebSocketListener
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         View rootLayout = getWindow().getDecorView().getRootView();
         rootLayout.requestLayout();
+
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREF_PLACE, Context.MODE_PRIVATE);
+        int savedVolume = sharedPreferences.getInt(Constants.PREF_VOLUME, 50);
+
+        this.mediaPlayer = MediaPlayer.create(this, R.raw.aylex_spring);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.setVolume(savedVolume, savedVolume);
+        mediaPlayer.start();
 
         List<User> friendsList = new ArrayList<>();
         List<User> friendsRequestList = new ArrayList<>();
@@ -482,6 +494,38 @@ public class MenuActivity extends AppCompatActivity implements WebSocketListener
             }
         } else {
             homePage.showSettingError(message.getString("error_field"), message.getString("error"));
+        }
+    }
+
+    public void setMediaVolume(int progress) {
+        float volume = progress / 100f;
+        this.mediaPlayer.setVolume(volume, volume);
+        SharedPreferences sharedPreferences = this.getSharedPreferences(Constants.PREF_PLACE, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putInt(Constants.PREF_VOLUME, progress).apply();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
+            mediaPlayer.start();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 

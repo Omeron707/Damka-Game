@@ -6,10 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +45,8 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     private int selectedPieceIndex = -1;
     private char[][] board;
     private String color;
+    private boolean isVibrationEnabled;
+    private Vibrator vibrator = null;
 
     private User opponent;
     private boolean lookingForGame = true;
@@ -75,6 +80,12 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         this.topTextLabel = findViewById(R.id.top_game_label);
         this.topTextLabel.setText("Looking for game");
         this.exitAlertMessage = "Are you sure you want to leave the match?";
+
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREF_PLACE, Context.MODE_PRIVATE);
+        this.isVibrationEnabled = sharedPreferences.getBoolean(Constants.PREF_VIBRATION, true);
+        if (this.isVibrationEnabled) {
+            this.vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        }
 
         // Loop to create the grid of Buttons
         this.checkersBoard = findViewById(R.id.game_board_grid_view);
@@ -470,11 +481,17 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         setBoard(parseBoard(gameState));
         this.myTurn = this.color.equals(gameState.getString("turn"));
         changeBoardInteraction(this.myTurn);
+        if (isVibrationEnabled && this.vibrator != null && this.myTurn) {
+            this.vibrator.vibrate(500);
+        }
     }
 
     private void moveResponse(JSONObject message) throws JSONException {
-        if (!message.getBoolean("success")) {
+        if (!message.getBoolean("success")) { // move is invalid
             changeBoardInteraction(true);
+            if (isVibrationEnabled && this.vibrator != null) {
+                this.vibrator.vibrate(500);
+            }
         }
         updateGameState(message);
     }
@@ -654,6 +671,25 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         Intent resultIntent = new Intent();
         setResult(RESULT_CANCELED, resultIntent);
         finish();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // Stop any ongoing vibration when the activity is stopped
+        if (vibrator != null) {
+            vibrator.cancel();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Release the Vibrator resources when the activity is destroyed
+        if (vibrator != null) {
+            vibrator.cancel();
+            vibrator = null;
+        }
     }
 
     /*

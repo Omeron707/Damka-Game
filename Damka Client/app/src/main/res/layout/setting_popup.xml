@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layoutDirection="ltr"
@@ -27,7 +28,7 @@
         android:layout_marginEnd="3dp"
         android:text="Username:"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/slider_place_holder"
+        app:layout_constraintBottom_toTopOf="@+id/volume_seekbar"
         app:layout_constraintEnd_toStartOf="@+id/center_setting_guideline"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -111,21 +112,35 @@
         android:text="Edit"
         android:textColor="@color/white"
         android:backgroundTint="@color/blue"
-        app:layout_constraintBottom_toTopOf="@+id/slider_place_holder"
+        app:layout_constraintBottom_toTopOf="@+id/volume_seekbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/privacy_setting_view" />
 
-    <TextView
-        android:id="@+id/slider_place_holder"
+    <SeekBar
+        android:id="@+id/volume_seekbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:max="100"
+        android:progress="50"
+        android:thumb="@drawable/music_volume_thumb"
+        app:layout_constraintBottom_toTopOf="@+id/vibration_switch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/enable_edit_button" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/vibration_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Slider here"
-        android:textSize="48sp"
+        android:layout_marginBottom="10dp"
+        android:drawablePadding="12dp"
+        android:drawableStart="@drawable/ic_vibration"
         app:layout_constraintBottom_toTopOf="@+id/logout_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mail_setting_view" />
+        app:layout_constraintTop_toBottomOf="@+id/volume_seekbar" />
 
     <Button
         android:id="@+id/logout_button"
@@ -136,6 +151,7 @@
         android:text="@string/logout"
         android:padding="5dp"
         android:textSize="28sp"
+        app:layout_constraintTop_toBottomOf="@id/vibration_switch"
         app:layout_constraintBottom_toTopOf="@id/setting_version_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
