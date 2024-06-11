@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -30,17 +31,25 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Stack;
 
 
 public class GameActivity extends AppCompatActivity implements WebSocketListener {
 
     private GridLayout checkersBoard;
     private TextView opponentNameView;
+    private TextView opponentRatingView;
     private TextView textLabel;
     private TextView topTextLabel;
     private Button offerDrawBtn;
     private Button chainBtn;
     private Button showEndPopupBtn;
+    
+    private Button goBackBtn;
+    private Button goNextBtn;
+    private Button goAllBackBtn;
+    private Button goAllNextBtn;
+
     private String exitAlertMessage;
     private int selectedPieceIndex = -1;
     private char[][] board;
@@ -58,6 +67,9 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
     private boolean isChainCapture = false;
     private final List<Move> moves = new ArrayList<>();
+
+    private Stack<char[][]> left;
+    private Stack<char[][]> right;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +90,64 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         this.opponent = intent.getParcelableExtra("opponent");
         this.textLabel = findViewById(R.id.game_label);
         this.topTextLabel = findViewById(R.id.top_game_label);
+        this.opponentRatingView = findViewById(R.id.opponent_rating_view);
         this.topTextLabel.setText("Looking for game");
         this.exitAlertMessage = "Are you sure you want to leave the match?";
+
+        this.left = new Stack<>();
+        this.right = new Stack<>();
+        this.goBackBtn = findViewById(R.id.right_arrow);
+        this.goNextBtn = findViewById(R.id.left_arrow);
+        this.goAllBackBtn = findViewById(R.id.all_right_arrow);
+        this.goAllNextBtn = findViewById(R.id.all_left_arrow);
+        this.goBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!right.empty()) {
+                    left.push(right.pop());
+                    setBoard(right.peek());
+                }
+                refreshViewButtons();
+            }
+        });
+
+        this.goNextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!left.empty()) {
+                    right.push(left.pop());
+                    setBoard(right.peek());
+                }
+                refreshViewButtons();
+            }
+        });
+
+        this.goAllBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                while(right.size() > 1) {
+                    left.push(right.pop());
+                }
+                setBoard(right.peek());
+                refreshViewButtons();
+            }
+        });
+
+        this.goAllNextBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                while(!left.empty()) {
+                    right.push(left.pop());
+                }
+                setBoard(right.peek());
+                refreshViewButtons();
+            }
+        });
+
+        this.goBackBtn.setEnabled(false);
+        this.goNextBtn.setEnabled(false);
+        this.goAllBackBtn.setEnabled(false);
+        this.goAllNextBtn.setEnabled(false);
 
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.PREF_PLACE, Context.MODE_PRIVATE);
         this.isVibrationEnabled = sharedPreferences.getBoolean(Constants.PREF_VIBRATION, true);
@@ -178,6 +246,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
             this.endReturn = "end";
         } else {
             this.opponentNameView.setText(opponent.getUsername());
+            this.opponentRatingView.setText(String.valueOf((int)opponent.getRating()));
             int id = intent.getIntExtra("gameID", 0);
             Communicator.getInstance().sendInviteMatch(opponent.getUserID(), id);
             this.endReturn = "end_friend";
@@ -283,6 +352,32 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         }
     }
 
+    private void refreshViewButtons() {
+        this.goNextBtn.setEnabled(!this.left.empty());
+        this.goBackBtn.setEnabled(this.right.size() > 1);
+        this.goAllBackBtn.setEnabled(this.right.size() > 1);
+        this.goAllNextBtn.setEnabled(!this.left.empty());
+        changeBoardInteraction(this.myTurn && this.left.empty());
+
+        String stage = "(" + this.right.size() + "/" + (this.left.size() + this.right.size()) + ")";
+
+        this.topTextLabel.setText("Playing " + stage);
+        if (!this.left.empty()) {
+            this.goNextBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.go_button_on)));
+            this.goAllNextBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.go_button_on)));
+        } else {
+            this.goNextBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.go_button_off)));
+            this.goAllNextBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.go_button_off)));
+        }
+        if (this.right.size() > 1) {
+            this.goBackBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.go_button_on)));
+            this.goAllBackBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.go_button_on)));
+        } else {
+            this.goBackBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.go_button_off)));
+            this.goAllBackBtn.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.go_button_off)));
+        }
+    }
+
     private void sendMovePiece() {
         try {
             JSONObject message = new JSONObject();
@@ -357,7 +452,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         if (message.getString("userID").equals(this.opponent.getUserID())) {
             this.opponentDrawOffer = !this.opponentDrawOffer;
             if (opponentDrawOffer) {
-                this.opponentNameView.setText(this.opponent.getUsername() + "\n- Draw!");
+                this.opponentNameView.setText(this.opponent.getUsername() + " - Draw!");
             } else {
                 this.opponentNameView.setText(this.opponent.getUsername());
             }
@@ -375,11 +470,11 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         this.checkersBoard.setClickable(intractable);
         this.checkersBoard.setFocusable(intractable);
         this.checkersBoard.setFocusableInTouchMode(intractable);
-        if (intractable) {
+        /*if (intractable) {
             this.checkersBoard.setBackgroundColor(ContextCompat.getColor(this, R.color.blue));
         } else {
-            this.checkersBoard.setBackgroundColor(ContextCompat.getColor(this, R.color.offline_color));
-        }
+            this.checkersBoard.setBackgroundColor(ContextCompat.getColor(this, R.color.not_turn));
+        }*/
 
         this.chainBtn.setEnabled(intractable);
         // Disable interaction with all buttons within the GridLayout
@@ -478,9 +573,24 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
     private void updateGameState(JSONObject message) throws JSONException {
         JSONObject gameState = message.getJSONObject("game_state");
-        setBoard(parseBoard(gameState));
+        char[][] newBoard = parseBoard(gameState);
+        if (message.optBoolean("success", true)) {
+            if (this.left.empty()) {
+                this.right.push(newBoard);
+                setBoard(newBoard);
+            } else {
+                this.left.add(0, newBoard);
+            }
+        } else {
+            setBoard(newBoard);
+        }
         this.myTurn = this.color.equals(gameState.getString("turn"));
-        changeBoardInteraction(this.myTurn);
+        if (this.myTurn) {
+            this.checkersBoard.setBackgroundColor(ContextCompat.getColor(this, R.color.blue));
+        } else {
+            this.checkersBoard.setBackgroundColor(ContextCompat.getColor(this, R.color.not_turn));
+        }
+        refreshViewButtons();
         if (isVibrationEnabled && this.vibrator != null && this.myTurn) {
             this.vibrator.vibrate(500);
         }
@@ -503,13 +613,15 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         this.opponent = new User(opponentData.getString("userID"), opponentData.getString("username"), opponentData.getDouble("rating"), 1, true);
         this.color = message.getString("color");
         this.myTurn = this.color.equals(gameState.getString("turn"));
-        setBoard(parseBoard(gameState));
-
+        char[][] newBoard = parseBoard(gameState);
+        setBoard(newBoard);
+        this.right.push(newBoard);
         //update UI
         this.lookingForGame = false;
         hideLabel();
-        this.topTextLabel.setText("Playing");
+        this.topTextLabel.setText("Playing (1/1)");
         this.opponentNameView.setText(this.opponent.getUsername());
+        this.opponentRatingView.setText(String.valueOf((int)this.opponent.getRating()));
 
         Communicator.getInstance().sendReady(message.getInt("gameID"));
     }
@@ -519,6 +631,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         this.offerDrawBtn.setEnabled(true);
         if (this.myTurn) {
             changeBoardInteraction(true);
+            this.checkersBoard.setBackgroundColor(ContextCompat.getColor(this, R.color.blue));
         }
     }
 
@@ -565,6 +678,9 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+        this.endPopupWindow.setOutsideTouchable(false);
+        this.endPopupWindow.setFocusable(false);
         this.endPopupWindow.showAtLocation(endWindow, Gravity.CENTER, 0, 0);
 
         titleView.setText(title);

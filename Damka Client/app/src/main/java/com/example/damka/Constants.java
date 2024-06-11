@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Constants {
-    public static final String version = "v0.1.2";
-    public static final String serverIP = "192.168.68.106";
+    public static final String version = "v0.1.3";
+    public static final String serverIP = "192.168.68.107";
     public static final int serverPort = 9999;
 
     public static final String currentMail = "current_mail";

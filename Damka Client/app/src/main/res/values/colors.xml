@@ -22,4 +22,7 @@
     <color name="dark_pieces">#0F191C</color>
     <color name="light_pieces">#CBDEDF</color>
     <color name="draw_color">#3352FD</color>
+    <color name="not_turn">#5A5A5A</color>
+    <color name="go_button_on">#666666</color>
+    <color name="go_button_off">#444444</color>
 </resources>

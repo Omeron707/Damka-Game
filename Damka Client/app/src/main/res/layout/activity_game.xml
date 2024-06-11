@@ -52,14 +52,14 @@
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/game_top_padding_view"
-        app:layout_constraintEnd_toStartOf="@id/opponent_time_view"/>
+        app:layout_constraintEnd_toStartOf="@id/opponent_rating_view"/>
 
     <TextView
-        android:id="@+id/opponent_time_view"
+        android:id="@+id/opponent_rating_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/default_time_value"
-        android:textSize="30sp"
+        android:text="@string/no_rating"
+        android:textSize="38sp"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/opponent_username_view"
@@ -77,21 +77,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/opponent_username_view"
-        app:layout_constraintBottom_toTopOf="@id/self_time_view" >
+        app:layout_constraintBottom_toTopOf="@id/start_chain_capture" >
     </GridLayout>
-
-    <TextView
-        android:id="@+id/self_time_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/default_time_value"
-        android:textSize="30sp"
-        android:textColor="@color/white"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/start_chain_capture"/>
-
 
     <Button
         android:id="@+id/start_chain_capture"
@@ -100,10 +87,10 @@
         android:background="@drawable/button_background"
         android:backgroundTint="@color/light_square"
         android:padding="15dp"
-        android:layout_marginBottom="50dp"
         android:text="@string/chain_capture"
+        android:layout_marginBottom="25dp"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/left_arrow"
         app:layout_constraintEnd_toStartOf="@id/offer_draw_button"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -130,11 +117,75 @@
         android:padding="15dp"
         android:visibility="gone"
         android:text="show ending"
-        android:layout_marginBottom="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="25dp"
+        app:layout_constraintBottom_toTopOf="@+id/left_arrow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />
+
+    <Button
+        android:id="@+id/all_left_arrow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:backgroundTint="@color/go_button_off"
+        android:padding="5dp"
+        android:layout_margin="3dp"
+        android:drawableTop="@drawable/ic_go_all_left"
+        android:text="current"
+        android:textColor="@color/black"
+        android:textSize="11sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/left_arrow"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/left_arrow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:backgroundTint="@color/go_button_off"
+        android:padding="5dp"
+        android:layout_margin="3dp"
+        android:drawableTop="@drawable/ic_go_left"
+        android:text="next"
+        android:textColor="@color/black"
+        android:textSize="11sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/right_arrow"
+        app:layout_constraintStart_toEndOf="@id/all_left_arrow" />
+
+    <Button
+        android:id="@+id/right_arrow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:backgroundTint="@color/go_button_off"
+        android:padding="5dp"
+        android:layout_margin="3dp"
+        android:drawableTop="@drawable/ic_go_right"
+        android:text="back"
+        android:textColor="@color/black"
+        android:textSize="11sp"
+        app:layout_constraintStart_toEndOf="@id/left_arrow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/all_right_arrow" />
+
+    <Button
+        android:id="@+id/all_right_arrow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:backgroundTint="@color/go_button_off"
+        android:padding="5dp"
+        android:layout_margin="3dp"
+        android:drawableTop="@drawable/ic_go_all_right"
+        android:text="start"
+        android:textColor="@color/black"
+        android:textSize="11sp"
+        app:layout_constraintStart_toEndOf="@id/right_arrow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/game_label"
