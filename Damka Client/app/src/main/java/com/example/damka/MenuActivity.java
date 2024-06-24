@@ -23,6 +23,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -156,15 +157,20 @@ public class MenuActivity extends AppCompatActivity implements WebSocketListener
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 Communicator.getInstance().setListener(this);
-                this.isReturnFromGame = true;
-                Communicator.getInstance().sendGetProfile(this.loggedUser.getUserID());
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     Intent data = result.getData();
                     if (data != null) {
                         String res = data.getStringExtra("result");
+                        Constants.GameStage stage = (Constants.GameStage)data.getSerializableExtra("stage");
+                        // update friends list if played against a friend
                         if (Objects.equals(res, "end_friend"))
                         {
                             Communicator.getInstance().sendCode(Constants.GET_FRIENDS_LIST_CODE);
+                        }
+                        // update user profile unless game didn't start
+                        if (stage != Constants.GameStage.LOOKING_FOR_GAME) {
+                            this.isReturnFromGame = true;
+                            Communicator.getInstance().sendGetProfile(this.loggedUser.getUserID());
                         }
                     }
                 } else {
@@ -182,7 +188,7 @@ public class MenuActivity extends AppCompatActivity implements WebSocketListener
         };
         getOnBackPressedDispatcher().addCallback(this, backPressedCallback);
 
-        Communicator.getInstance().sendCode(Constants.NOTIFICATION_CODE);
+        Communicator.getInstance().sendCode(Constants.GET_NOTIFICATION_CODE);
         Communicator.getInstance().sendCode(Constants.GET_FRIENDS_LIST_CODE);
         Communicator.getInstance().sendCode(Constants.GET_LEADERBOARD_CODE);
     }
@@ -238,7 +244,7 @@ public class MenuActivity extends AppCompatActivity implements WebSocketListener
                         logout(result);
                         break;
                     case Constants.ADD_FRIEND_CODE:
-                        requestAddFriend(result);
+                        responseAddFriend(result);
                         break;
                     case Constants.ACCEPT_FRIEND_CODE:
                         responseAcceptFriend(result);
@@ -307,7 +313,7 @@ public class MenuActivity extends AppCompatActivity implements WebSocketListener
         }
     }
 
-    private void requestAddFriend(JSONObject message) throws JSONException {
+    private void responseAddFriend(JSONObject message) throws JSONException {
         String msg;
         if (message.getInt("success") == 0) {
             msg = "Send successfully";
@@ -432,13 +438,14 @@ public class MenuActivity extends AppCompatActivity implements WebSocketListener
 
     private void gameInvite(Notification notification) {
         String userID = notification.getSourceID();
-
         User opponent = this.friendsPage.getFriend(userID);
         if (opponent == null) {
             return;
         }
+
         int gameID = Integer.parseInt(notification.getContent());
         String inviteMessage = "Do you want to play against " + opponent.getUsername() + "?";
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(inviteMessage)
                 .setPositiveButton("Yes", (dialog, which) -> this.startGameActivityFriendly(opponent, gameID))

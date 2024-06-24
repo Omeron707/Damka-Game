@@ -15,8 +15,7 @@ The client can connect to the server, add friends and plays games togehter!
 
 **Client:** Android Studio, Java
 
-**Server:** Cpp, Sqlite
-
+**Server:** Visual Studio, Cpp, SQLite
 
 ## Acknowledgements
 

@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Constants {
-    public static final String version = "v0.1.3";
-    public static final String serverIP = "192.168.68.107";
+    public static final String version = "v0.1.0";
+    public static final String serverIP = "192.168.68.109";
     public static final int serverPort = 9999;
 
     public static final String currentMail = "current_mail";
@@ -57,4 +57,16 @@ public class Constants {
     public static final String PREF_PLACE = "app_preferences";
     public static final String PREF_VOLUME = "volume";
     public static final String PREF_VIBRATION = "vibration";
+
+    public enum GameStage {
+        LOOKING_FOR_GAME,
+        PLAYING,
+        GAME_EMD
+    }
+
+    public static final Map<GameStage, String> closeGameMessages = new HashMap<GameStage, String>() {{
+        put(GameStage.LOOKING_FOR_GAME, "Do you want to stop looking for match?");
+        put(GameStage.PLAYING, "Are you sure you want to leave the match?");
+        put(GameStage.GAME_EMD, "Close.");
+    }};
 }

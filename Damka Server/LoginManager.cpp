@@ -32,7 +32,6 @@ void LoginManager::checkNewUsername(const std::string username)
 	{
 		throw LoginException("username should have only letters and number seperated with '_', '-'", JsonKeys::USERNAME);
 	}
-	// TODO: add forbidden names list
 }
 
 void LoginManager::checkNewPassword(const std::string password)

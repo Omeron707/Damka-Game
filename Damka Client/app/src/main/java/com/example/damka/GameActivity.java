@@ -50,10 +50,6 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     private Button goAllBackBtn;
     private Button goAllNextBtn;
 
-    private String exitAlertMessage;
-    private int selectedPieceIndex = -1;
-    private char[][] board;
-    private String color;
     private boolean isVibrationEnabled;
     private Vibrator vibrator = null;
 
@@ -64,6 +60,11 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     private boolean opponentDrawOffer = false;
     private String endReturn;
     private PopupWindow endPopupWindow = null;
+
+    private Constants.GameStage stage;
+    private int selectedPieceIndex = -1;
+    private char[][] board;
+    private String color;
 
     private boolean isChainCapture = false;
     private final List<Move> moves = new ArrayList<>();
@@ -92,7 +93,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         this.topTextLabel = findViewById(R.id.top_game_label);
         this.opponentRatingView = findViewById(R.id.opponent_rating_view);
         this.topTextLabel.setText("Looking for game");
-        this.exitAlertMessage = "Are you sure you want to leave the match?";
+        this.stage = Constants.GameStage.LOOKING_FOR_GAME;
 
         this.left = new Stack<>();
         this.right = new Stack<>();
@@ -470,11 +471,6 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         this.checkersBoard.setClickable(intractable);
         this.checkersBoard.setFocusable(intractable);
         this.checkersBoard.setFocusableInTouchMode(intractable);
-        /*if (intractable) {
-            this.checkersBoard.setBackgroundColor(ContextCompat.getColor(this, R.color.blue));
-        } else {
-            this.checkersBoard.setBackgroundColor(ContextCompat.getColor(this, R.color.not_turn));
-        }*/
 
         this.chainBtn.setEnabled(intractable);
         // Disable interaction with all buttons within the GridLayout
@@ -620,6 +616,7 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
         this.lookingForGame = false;
         hideLabel();
         this.topTextLabel.setText("Playing (1/1)");
+        this.stage = Constants.GameStage.PLAYING;
         this.opponentNameView.setText(this.opponent.getUsername());
         this.opponentRatingView.setText(String.valueOf((int)this.opponent.getRating()));
 
@@ -637,10 +634,11 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
 
     private void showGameResult(JSONObject message) throws JSONException {
         changeBoardInteraction(false);
+        this.checkersBoard.setBackgroundColor(ContextCompat.getColor(this, R.color.not_turn));
+        hideLabel();
         this.offerDrawBtn.setEnabled(false);
         this.topTextLabel.setText("Game End");
-        this.exitAlertMessage = "Close";
-        // this.gainTrophy;
+        this.stage = Constants.GameStage.GAME_EMD;
         String result = message.getString("result");
         String title;
         int strokeColor;
@@ -815,13 +813,14 @@ public class GameActivity extends AppCompatActivity implements WebSocketListener
     */
     public void backPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(this.exitAlertMessage)
+        builder.setMessage(Constants.closeGameMessages.get(this.stage))
                 .setPositiveButton("Yes", (dialog, which) -> {
                     // Close the activity
                     Communicator.getInstance().sendCode(Constants.LEAVE_GAME_CODE);
                     Communicator.getInstance().removeListener();
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("result", this.endReturn);
+                    resultIntent.putExtra("stage", this.stage);
                     setResult(RESULT_OK, resultIntent);
                     finish();
                 })

@@ -67,6 +67,7 @@ public class Communicator  {
         return instance;
     }
 
+    // set which activity get the messages
     public void setListener(WebSocketListener listener) {
         this.listener = listener;
     }

@@ -139,7 +139,7 @@ public class SignupActivity extends AppCompatActivity implements WebSocketListen
         errorText.setText("\n");
         disableInteraction();
 
-        // check both fields have values
+        // check all fields have values
         if (username.isEmpty() || mail.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || birthdate.isEmpty())
         {
             String msg = "Must enter all fields";

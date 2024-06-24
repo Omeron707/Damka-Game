@@ -223,7 +223,7 @@ RequestResult MenuRequestHandler::addFriend(RequestInfo request)
 		response.notification->srcID = this->m_user->getUserID();
 		response.notification->dstID = request.msg[JsonKeys::USERID];
 		response.notification->type = NEW_FRIEND;
-		char buffer[100]; //TODO: get exact max number
+		char buffer[100];
 		sprintf_s(buffer, sizeof(buffer), NotificationMessages::NEW_FRIEND_MESSAGE, this->m_user->getUsername().c_str());
 		response.notification->content = std::string(buffer);
 		response.notification->saveInDB = true;
@@ -251,7 +251,7 @@ RequestResult MenuRequestHandler::acceptFriend(RequestInfo request)
 		response.notification->srcID = this->m_user->getUserID();
 		response.notification->dstID = request.msg[JsonKeys::USERID];
 		response.notification->type = ACCEPT_FRIEND;
-		char buffer[100]; //TODO: get exact max number
+		char buffer[100];
 		sprintf_s(buffer, sizeof(buffer), NotificationMessages::ACCPET_FRIEND_MESSAGE, this->m_user->getUsername().c_str());
 		response.notification->content = std::string(buffer);
 		response.notification->saveInDB = true;
